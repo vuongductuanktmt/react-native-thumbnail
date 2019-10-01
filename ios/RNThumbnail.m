@@ -16,8 +16,13 @@ RCT_EXPORT_METHOD(get:(NSString *)filepath resolve:(RCTPromiseResolveBlock)resol
                                reject:(RCTPromiseRejectBlock)reject)
 {
     @try {
-        filepath = [filepath stringByReplacingOccurrencesOfString:@"file://"
-                                                  withString:@""];
+        if([filepath containsString:@"file://"]){
+            filepath = [filepath stringByReplacingOccurrencesOfString:@"file://"
+            withString:@""];
+        } else {
+            // add headers
+        }
+        
         NSURL *vidURL = [NSURL fileURLWithPath:filepath];
         
         AVURLAsset *asset = [[AVURLAsset alloc] initWithURL:vidURL options:nil];
@@ -29,24 +34,18 @@ RCT_EXPORT_METHOD(get:(NSString *)filepath resolve:(RCTPromiseResolveBlock)resol
         
         CGImageRef imgRef = [generator copyCGImageAtTime:time actualTime:NULL error:&err];
         UIImage *thumbnail = [UIImage imageWithCGImage:imgRef];
-        // save to temp directory
-        NSString* tempDirectory = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory,
-                                                                       NSUserDomainMask,
-                                                                       YES) lastObject];
         
-        NSData *data = UIImageJPEGRepresentation(thumbnail, 1.0);
-        NSFileManager *fileManager = [NSFileManager defaultManager];
-        NSString *fullPath = [tempDirectory stringByAppendingPathComponent: [NSString stringWithFormat:@"thumb-%@.jpg", [[NSProcessInfo processInfo] globallyUniqueString]]];
-        [fileManager createFileAtPath:fullPath contents:data attributes:nil];
-        CGImageRelease(imgRef);
+        NSString *base64String = [UIImagePNGRepresentation(thumbnail)
+        base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
         if (resolve)
-            resolve(@{ @"path" : fullPath,
+            resolve(@{ @"uri" : base64String,
                        @"width" : [NSNumber numberWithFloat: thumbnail.size.width],
                        @"height" : [NSNumber numberWithFloat: thumbnail.size.height] });
     } @catch(NSException *e) {
         reject(e.reason, nil, nil);
     }
 }
+
 
 @end
   
