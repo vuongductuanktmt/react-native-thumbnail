@@ -1,6 +1,6 @@
 
 # react-native-thumbnail
-Get thumbnail from local media. Currently, it only supports for video.
+Get thumbnail from local or uri media. Currently, it only supports for video.
 
 ## Getting started
 
@@ -40,6 +40,6 @@ Get thumbnail from local media. Currently, it only supports for video.
 import RNThumbnail from 'react-native-thumbnail';
 
 RNThumbnail.get(filepath).then((result) => {
-  console.log(result.path); // thumbnail path
+  console.log(result.uri); // thumbnail uri base64
 })
 ```
