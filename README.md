@@ -5,7 +5,9 @@ Get thumbnail from local or uri media. Currently, it only supports for video.
 ## Getting started
 
 `$ npm install vuongductuanktmt/react-native-thumbnail --save`
+
 or 
+
 `$ yarn add vuongductuanktmt/react-native-thumbnail`
 
 ### Mostly automatic installation
