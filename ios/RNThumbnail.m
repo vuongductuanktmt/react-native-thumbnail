@@ -16,15 +16,17 @@ RCT_EXPORT_METHOD(get:(NSString *)filepath resolve:(RCTPromiseResolveBlock)resol
                                reject:(RCTPromiseRejectBlock)reject)
 {
     @try {
+        NSURL *vidURL = NULL;
+        
         if([filepath containsString:@"file://"]){
             filepath = [filepath stringByReplacingOccurrencesOfString:@"file://"
             withString:@""];
+            vidURL = [NSURL fileURLWithPath:filepath];
         } else {
+            vidURL = [NSURL URLWithString:filepath];
             // add headers
         }
-        
-        NSURL *vidURL = [NSURL fileURLWithPath:filepath];
-        
+                
         AVURLAsset *asset = [[AVURLAsset alloc] initWithURL:vidURL options:nil];
         AVAssetImageGenerator *generator = [[AVAssetImageGenerator alloc] initWithAsset:asset];
         generator.appliesPreferredTrackTransform = YES;
@@ -48,4 +50,3 @@ RCT_EXPORT_METHOD(get:(NSString *)filepath resolve:(RCTPromiseResolveBlock)resol
 
 
 @end
-  
