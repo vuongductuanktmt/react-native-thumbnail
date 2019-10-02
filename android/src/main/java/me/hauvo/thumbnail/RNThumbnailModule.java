@@ -7,6 +7,7 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 
 import android.graphics.BitmapFactory;
@@ -19,6 +20,8 @@ import android.util.Base64;
 import android.util.Log;
 import android.media.MediaMetadataRetriever;
 import android.graphics.Matrix;
+
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
@@ -61,21 +64,23 @@ public class RNThumbnailModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void get(String filePath, Promise promise) {
+    public void get(String filePath, ReadableMap config, Promise promise) {
         boolean isLocal = filePath.contains("file://");
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
         if (isLocal) {
             filePath = filePath.replace("file://", "");
             retriever.setDataSource(filePath);
         } else {
-            retriever.setDataSource(filePath, new HashMap<String, String>());
+
+            HashMap<String, String> headers = new HashMap(config.getMap("headers").toHashMap());
+            retriever.setDataSource(filePath, headers);
         }
-        Bitmap image = retriever.getFrameAtTime(1000000, MediaMetadataRetriever.OPTION_CLOSEST_SYNC);
+        Bitmap image = retriever.getFrameAtTime(config.getInt("timeFrame") * 1000000, MediaMetadataRetriever.OPTION_CLOSEST_SYNC);
 
         try {
             WritableMap map = Arguments.createMap();
 
-            map.putString("uri", convert(image));
+            map.putString("data", convert(image));
             map.putDouble("width", image.getWidth());
             map.putDouble("height", image.getHeight());
 
