@@ -44,6 +44,6 @@ or
 import RNThumbnail from 'react-native-thumbnail';
 
 RNThumbnail.get(filepath).then((result) => {
-  console.log(result.uri); // thumbnail uri base64
+  console.log(result.data); // thumbnail data base64
 })
 ```
