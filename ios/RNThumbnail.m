@@ -43,7 +43,7 @@ RCT_EXPORT_METHOD(get:(NSString *)filepath config:(NSDictionary *)config
         NSString *base64String = [UIImagePNGRepresentation(thumbnail)
         base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
         if (resolve)
-            resolve(@{ @"uri" : base64String,
+            resolve(@{ @"data" : base64String,
                        @"width" : [NSNumber numberWithFloat: thumbnail.size.width],
                        @"height" : [NSNumber numberWithFloat: thumbnail.size.height] });
     } @catch(NSException *e) {
