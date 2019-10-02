@@ -12,27 +12,30 @@
 }
 RCT_EXPORT_MODULE()
 
-RCT_EXPORT_METHOD(get:(NSString *)filepath resolve:(RCTPromiseResolveBlock)resolve
-                               reject:(RCTPromiseRejectBlock)reject)
+RCT_EXPORT_METHOD(get:(NSString *)filepath config:(NSDictionary *)config
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
 {
     @try {
         NSURL *vidURL = NULL;
-        
+        AVURLAsset *asset = NULL;
         if([filepath containsString:@"file://"]){
             filepath = [filepath stringByReplacingOccurrencesOfString:@"file://"
             withString:@""];
             vidURL = [NSURL fileURLWithPath:filepath];
+            asset = [[AVURLAsset alloc] initWithURL:vidURL options:nil];
         } else {
             vidURL = [NSURL URLWithString:filepath];
-            // add headers
+            asset = [[AVURLAsset alloc] initWithURL:vidURL options:@{@"AVURLAssetHTTPHeaderFieldsKey":[config objectForKey:@"headers"]}];
         }
                 
-        AVURLAsset *asset = [[AVURLAsset alloc] initWithURL:vidURL options:nil];
         AVAssetImageGenerator *generator = [[AVAssetImageGenerator alloc] initWithAsset:asset];
         generator.appliesPreferredTrackTransform = YES;
         
         NSError *err = NULL;
-        CMTime time = CMTimeMake(1, 60);
+        
+        
+        CMTime time = CMTimeMake([[config objectForKey:@"timeFrame"] intValue], 60);
         
         CGImageRef imgRef = [generator copyCGImageAtTime:time actualTime:NULL error:&err];
         UIImage *thumbnail = [UIImage imageWithCGImage:imgRef];
