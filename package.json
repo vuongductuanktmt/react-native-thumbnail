@@ -11,7 +11,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git@github.com:vuongductuanktmt/react-native-video-thumbnail.git"
+    "url": "git@github.com:vuongductuanktmt/react-native-thumbnail.git"
   },
   "license": "MIT"
 }
