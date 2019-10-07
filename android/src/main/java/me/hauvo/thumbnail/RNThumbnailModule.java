@@ -64,31 +64,36 @@ public class RNThumbnailModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void get(String filePath, ReadableMap config, Promise promise) {
-        boolean isLocal = filePath.contains("file://");
-        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-        if (isLocal) {
-            filePath = filePath.replace("file://", "");
-            retriever.setDataSource(filePath);
-        } else {
+    public void get(final String filePath, final ReadableMap config, final Promise promise) {
+        new Thread(new Runnable() {
+            public void run() {
+                boolean isLocal = filePath.contains("file://");
+                String uri = filePath;
+                MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+                if (isLocal) {
+                    uri = uri.replace("file://", "");
+                    retriever.setDataSource(uri);
+                } else {
 
-            HashMap<String, String> headers = new HashMap(config.getMap("headers").toHashMap());
-            retriever.setDataSource(filePath, headers);
-        }
-        Bitmap image = retriever.getFrameAtTime(config.getInt("timeFrame") * 1000000, MediaMetadataRetriever.OPTION_CLOSEST_SYNC);
+                    HashMap<String, String> headers = new HashMap(config.getMap("headers").toHashMap());
+                    retriever.setDataSource(uri, headers);
+                }
+                Bitmap image = retriever.getFrameAtTime(config.getInt("timeFrame") * 1000000, MediaMetadataRetriever.OPTION_CLOSEST_SYNC);
 
-        try {
-            WritableMap map = Arguments.createMap();
+                try {
+                    WritableMap map = Arguments.createMap();
 
-            map.putString("data", convert(image));
-            map.putDouble("width", image.getWidth());
-            map.putDouble("height", image.getHeight());
+                    map.putString("data", convert(image));
+                    map.putDouble("width", image.getWidth());
+                    map.putDouble("height", image.getHeight());
 
-            promise.resolve(map);
+                    promise.resolve(map);
 
-        } catch (Exception e) {
-            Log.e("E_RNThumnail_ERROR", e.getMessage());
-            promise.reject("E_RNThumnail_ERROR", e);
-        }
+                } catch (Exception e) {
+                    Log.e("E_RNThumnail_ERROR", e.getMessage());
+                    promise.reject("E_RNThumnail_ERROR", e);
+                }
+            }
+        }).start();
     }
 }
