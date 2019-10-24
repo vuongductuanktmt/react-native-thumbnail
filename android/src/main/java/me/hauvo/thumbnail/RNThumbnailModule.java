@@ -68,15 +68,15 @@ public class RNThumbnailModule extends ReactContextBaseJavaModule {
         new Thread(new Runnable() {
             public void run() {
                 boolean isLocal = filePath.contains("file://");
-                String uri = filePath;
+                String path = filePath;
                 MediaMetadataRetriever retriever = new MediaMetadataRetriever();
                 if (isLocal) {
-                    uri = uri.replace("file://", "");
-                    retriever.setDataSource(uri);
+                    path = path.replace("file://", "");
+                    retriever.setDataSource(path);
                 } else {
 
                     HashMap<String, String> headers = new HashMap(config.getMap("headers").toHashMap());
-                    retriever.setDataSource(uri, headers);
+                    retriever.setDataSource(path, headers);
                 }
                 Bitmap image = retriever.getFrameAtTime(config.getInt("timeFrame") * 1000000, MediaMetadataRetriever.OPTION_CLOSEST_SYNC);
 
