@@ -9,6 +9,11 @@
   "keywords": [
     "react-native"
   ],
+  "author": {
+    "name": "Vương Đức Tuấn",
+    "email": "vuongductuanktmt@gmail.com",
+    "url": "https://github.com/vuongductuanktmt"
+  },
   "repository": {
     "type": "git",
     "url": "git@github.com:vuongductuanktmt/react-native-thumbnail.git"
